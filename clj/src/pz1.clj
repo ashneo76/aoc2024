@@ -11,6 +11,10 @@
         zipped (map vector left right)]
     zipped))
 
+;; generate a difference of the two elements of each row and distance is always an abs
+(defn distance [row]
+  (abs (- (first row) (second row))))
+
 ;; util test
 (def test2 "7 6 4 2 1
 1 2 7 8 9
@@ -23,8 +27,8 @@
 
 ;; actual solution
 (defn pz1 [parsed-rows]
-  ;; generate a difference of the two elements of each row
-  (let [distances (map #(abs (- (first %) (second %))) parsed-rows)]
+  ;; get distances for all rows
+  (let [distances (map distance parsed-rows)]
     ;; take a sum of all distances
     (reduce + distances)))
 
@@ -47,18 +51,22 @@
 (defn occurrences [itm lst]
   (count (filter #(= % itm) lst)))
 
+;; the frequence function is itm * number of occurrences of item in the list
+(defn freq-fn [itm lst]
+  (* itm (occurrences itm lst)))
+
 ;; test occurrences
 (t/is (= 0 (occurrences 3 [1 2 5])))
 (t/is (= 2 (occurrences 3 [1 2 5 3 4 3])))
 
 ;; actual solution
 (defn pz2 [parsed-rows]
-  (let [left (map first parsed-rows)
-        right (map second parsed-rows)
-        ;; the frequence function is itm * number of occurrences of item in the list
-        freq-fn (fn [itm lst] (* itm (occurrences itm lst)))
-        ;; get frequency for each item
-        freq (map #(freq-fn % right) left)]
+  (let [left (map first parsed-rows) ;; left list
+        right (map second parsed-rows) ;; right list
+
+        ;; get frequency for each item in the left list
+        freq (map (fn [x] (freq-fn x right)) left)]
+
     ;; sum of all frequencies
     (reduce + freq)))
 

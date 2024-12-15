@@ -23,7 +23,9 @@
 
 ;; actual solution
 (defn pz1 [parsed-rows]
+  ;; generate a difference of the two elements of each row
   (let [distances (map #(abs (- (first %) (second %))) parsed-rows)]
+    ;; take a sum of all distances
     (reduce + distances)))
 
 ;; test
@@ -41,6 +43,7 @@
 
 ;; -- problem 2
 ;; util
+;; get the count of item in a list
 (defn occurrences [itm lst]
   (count (filter #(= % itm) lst)))
 
@@ -52,9 +55,13 @@
 (defn pz2 [parsed-rows]
   (let [left (map first parsed-rows)
         right (map second parsed-rows)
+        ;; the frequence function is itm * number of occurrences of item in the list
         freq-fn (fn [itm lst] (* itm (occurrences itm lst)))
+        ;; get frequency for each item
         freq (map #(freq-fn % right) left)]
+    ;; sum of all frequencies
     (reduce + freq)))
+
 (t/is (= 31 (pz2 (parse-csv test-data))))
 
 ;; apply to actual data
